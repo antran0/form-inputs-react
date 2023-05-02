@@ -2,13 +2,11 @@ import React, { useState } from "react";
 
 const SimpleInput = (props) => {
   const [enteredName, setEnteredName] = useState("");
-  const [enteredNameIsValid, setEnteredNameIsValid] = useState(false);
-  // Setting enteredNameIsValid to be true initially causes problems if we had,
-  // for example, a useEffect hook that depended on the value of enteredNameIsValid.
-  // This might cause useEffect to execute when we don't want it to.
-  // The enteredNameTouched state allows us to monitor if the user has begun typing
-  // or has clicked on the input field.
   const [enteredNameTouched, setEnteredNameTouched] = useState(false);
+
+  // inferred states
+  const enteredNameIsValid = enteredName.trim() !== "";
+  const nameInputIsInvalid = !enteredNameIsValid && enteredNameTouched;
 
   const nameInputChangeHandler = (event) => {
     setEnteredName(event.target.value);
@@ -16,26 +14,18 @@ const SimpleInput = (props) => {
 
   const nameInputBlurHandler = (event) => {
     setEnteredNameTouched(true);
-
-    if (enteredName.trim() === "") {
-      setEnteredNameIsValid(false);
-    }
   };
 
   const submitHandler = (event) => {
     event.preventDefault();
     setEnteredNameTouched(true);
 
-    if (enteredName.trim() === "") {
-      setEnteredNameIsValid(false);
-    } else {
+    if (enteredNameIsValid) {
       console.log(`Submitting form! Name: ${enteredName}`);
-      setEnteredNameIsValid(true);
       setEnteredName("");
+      setEnteredNameTouched(false);
     }
   };
-
-  const nameInputIsInvalid = !enteredNameIsValid && enteredNameTouched;
 
   const nameInputClasses = nameInputIsInvalid
     ? "form-control invalid"
