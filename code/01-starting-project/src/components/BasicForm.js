@@ -11,7 +11,16 @@ const BasicForm = (props) => {
     reset: resetFirstNameInput,
   } = useInput((value) => value.trim() !== "");
 
-  let formIsValid = firstNameIsValid;
+  const {
+    value: enteredLastName,
+    isValid: lastNameIsValid,
+    hasError: lastNameInputHasError,
+    valueChangeHandler: lastNameChangeHandler,
+    inputBlurHandler: lastNameBlurHandler,
+    reset: resetLastNameInput,
+  } = useInput((value) => value.trim() !== "");
+
+  let formIsValid = firstNameIsValid && lastNameIsValid;
 
   const submitHandler = (event) => {
     event.preventDefault();
@@ -23,11 +32,17 @@ const BasicForm = (props) => {
 
     console.log("Submitting form!");
     console.log(`\tFirst Name: ${enteredFirstName}`);
+    console.log(`\tLast Name: ${enteredFirstName}`);
 
     resetFirstNameInput();
+    resetLastNameInput();
   };
 
   const firstNameClasses = firstNameInputHasError
+    ? "form-control invalid"
+    : "form-control";
+
+  const lastNameClasses = lastNameInputHasError
     ? "form-control invalid"
     : "form-control";
 
@@ -47,9 +62,18 @@ const BasicForm = (props) => {
             <p className="error-text">First name cannot be empty.</p>
           )}
         </div>
-        <div className="form-control">
-          <label htmlFor="name">Last Name</label>
-          <input type="text" id="name" />
+        <div className={lastNameClasses}>
+          <label htmlFor="lastName">Last Name</label>
+          <input
+            type="text"
+            id="lastName"
+            value={enteredLastName}
+            onChange={lastNameChangeHandler}
+            onBlur={lastNameBlurHandler}
+          />
+          {lastNameInputHasError && (
+            <p className="error-text">Last name cannot be empty.</p>
+          )}
         </div>
       </div>
       <div className="form-control">
